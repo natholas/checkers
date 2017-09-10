@@ -26,7 +26,7 @@ export class MainComponent {
 
   ngOnInit() {
     this.players = [new Player(0), new Player(1)]
-    this.board = new Board(this.boardService.generate(10))
+    this.board = new Board(this.boardService.generate(4))
     this.boardService.setupGame(this.board, this.players)
     this.switchActivePlayer()
   }
@@ -96,6 +96,9 @@ export class MainComponent {
     this.selectSquare(newSquare)
     if (!didJump) this.switchActivePlayer()
     else this.removeJumpedPieces(oldSquare, newSquare)
+    if (this.board.isKingableSquare(newSquare)) {
+      newSquare.chessPiece.king = true
+    }
     this.update()
   }
 

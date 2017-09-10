@@ -38,9 +38,11 @@ export class BoardService {
 
     for (let square of board.grid) {
       
-      if (square.traversable && square.pos.y < 4) {
+      if (square.traversable && square.pos.y < 1) {
+      // if (square.traversable && square.pos.y < 4) {
         square.chessPiece = new ChessPiece(players[1])
-      } else if (square.traversable && square.pos.y > board.size - 5) {
+      } else if (square.traversable && square.pos.y > board.size - 2) {
+      // } else if (square.traversable && square.pos.y > board.size - 5) {
         square.chessPiece = new ChessPiece(players[0])
       }
     }

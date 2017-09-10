@@ -36,6 +36,14 @@ export class RendererService {
         ctx.fill()
 
         if (square.chessPiece.selected) {
+          ctx.strokeStyle = '#666'
+          ctx.stroke()
+        }
+
+        if (square.chessPiece.king) {
+          ctx.beginPath()
+          ctx.arc(x - square.chessPiece.offset.x, y - square.chessPiece.offset.y, 24, 0, 2 * Math.PI)
+          ctx.strokeStyle = 'red'
           ctx.stroke()
         }
       }

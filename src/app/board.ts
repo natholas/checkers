@@ -27,30 +27,39 @@ export class Board {
     let right = square.pos.x !== this.size - 1
     let bottom = square.pos.y !== this.size - 1
 
-    if (right && top) moves.push(new Vector(1,1))
-    if (right && bottom) moves.push(new Vector(1,-1))
-    if (left && bottom) moves.push(new Vector(-1,-1))
-    if (left && top) moves.push(new Vector(-1,1))
-
+    if (right && top) moves.push(new Vector(1,-1))
+    if (right && bottom) moves.push(new Vector(1,1))
+    if (left && bottom) moves.push(new Vector(-1,1))
+    if (left && top) moves.push(new Vector(-1,-1))
+    
     for (let i = 0; i < moves.length; i ++) {
       let targetSquare = this.getSquare(square.pos.add(moves[i]))
+      
+      if (!targetSquare) {
+        moves.splice(i, 1)
+        i--
+        continue
+      }
       if (targetSquare.chessPiece && targetSquare.chessPiece.player !== activePlayer) {
         let jumpTargetSquare = this.getSquare(targetSquare.pos.add(moves[i]))
-        if (!jumpTargetSquare.chessPiece) {
+        if (jumpTargetSquare && !jumpTargetSquare.chessPiece) {
           moves.splice(i, 1)
           moves.splice(i, 0, jumpTargetSquare)
         } else {
           moves.splice(i, 1)
           i --
         }
-      } else if (targetSquare.pos.y > square.pos.y && player.type == 0 || targetSquare.pos.y < square.pos.y && player.type == 1) {
+      } else if (targetSquare.chessPiece && targetSquare.chessPiece.player === activePlayer) {
+        moves.splice(i, 1)
+        i--
+      } else if (!square.chessPiece.king && (targetSquare.pos.y > square.pos.y && player.type == 0 || targetSquare.pos.y < square.pos.y && player.type == 1)) {
         moves.splice(i, 1)
         i--
       } else {
         moves[i] = targetSquare
       }
     }
-    
+
     return moves
   }
 
@@ -75,6 +84,13 @@ export class Board {
     }
     squares.splice(squares.length-1, 1)
     return squares
+  }
+
+  isKingableSquare(square: Square) {
+    if (!square.chessPiece) return false
+    let playerType = square.chessPiece.player.type
+    if (playerType === 0 && square.pos.y === 0) return true
+    if (playerType === 1 && square.pos.y === this.size - 1) return true
   }
 
 }

@@ -6,6 +6,7 @@ export class ChessPiece {
   selected: boolean = false
   origColor: string
   offset: Vector = new Vector()
+  king: boolean = false
 
   constructor(player: Player) {
     this.player = player
