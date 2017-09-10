@@ -1,0 +1,8 @@
+<div>
+  <app-canvas #canvas
+    [board]="board" 
+    (boardMouseDown)="boardMouseDown($event)" 
+    (boardMouseUp)="boardMouseUp($event)"
+    (boardMouseMove)="boardMouseMove($event)"
+  ></app-canvas>
+</div>
