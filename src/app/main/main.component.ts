@@ -15,11 +15,12 @@ import { Square } from './../square'
 export class MainComponent {
   @ViewChild('canvas')
   canvas
+  @ViewChild('scoreKeeper')
+  scoreKeeper
   board: Board
   players: Player[] = []
   selectedSquare: Square = null
   activePlayer: Player
-
 
   constructor(private boardService: BoardService) { }
 
@@ -27,7 +28,7 @@ export class MainComponent {
     this.players = [new Player(0), new Player(1)]
     this.board = new Board(this.boardService.generate(10))
     this.boardService.setupGame(this.board, this.players)
-    this.activePlayer = this.players[0]
+    this.switchActivePlayer()
   }
 
   boardMouseDown(pos: Vector) {
@@ -43,7 +44,7 @@ export class MainComponent {
       this.moveChessPiece(this.selectedSquare, newSquare)
     }
     this.unSelectSquare()
-    this.render()
+    this.update()
   }
 
   boardMouseMove(rawPos: Vector) {
@@ -58,14 +59,14 @@ export class MainComponent {
     offsetPos.y -= rawPos.y
     
     this.selectedSquare.chessPiece.offset = offsetPos
-    this.render()
+    this.update()
   }
 
   selectSquare(square: Square) {
     this.unSelectSquare()
     this.selectedSquare = square
     square.selected = true
-    this.render()
+    this.update()
   }
 
   unSelectSquare() {
@@ -75,8 +76,9 @@ export class MainComponent {
     this.selectedSquare = null
   }
 
-  render() {
+  update() {
     this.canvas.render()
+    this.scoreKeeper.update()
   }
 
   checkIfMoveIsLegal(oldSquare: Square, newSquare: Square) {
@@ -94,15 +96,17 @@ export class MainComponent {
     this.selectSquare(newSquare)
     if (!didJump) this.switchActivePlayer()
     else this.removeJumpedPieces(oldSquare, newSquare)
-    this.render()
+    this.update()
   }
 
   switchActivePlayer() {
+    if (this.activePlayer) this.activePlayer.active = false
     if (this.activePlayer === this.players[0]) {
       this.activePlayer = this.players[1]
     } else {
       this.activePlayer = this.players[0]
     }
+    this.activePlayer.active = true
   }
 
   removeJumpedPieces(oldSquare: Square, newSquare: Square) {

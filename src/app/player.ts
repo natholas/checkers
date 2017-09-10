@@ -1,6 +1,8 @@
 export class Player {
   type: number
   color: string
+  score: number = 0
+  active: boolean = false
 
   constructor(type: number) {
     this.type = type

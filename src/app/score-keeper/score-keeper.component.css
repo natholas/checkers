@@ -1,0 +1,24 @@
+.player-info {
+  width: 400px;
+  max-width: 50%;
+  float: left;
+  border: 2px solid black;
+  font-weight: bold;
+  font-size: 40px;
+  text-align: center;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.player-info.white {
+  background-color: #eee;
+}
+
+.player-info.black {
+  background-color: #333;
+  color: #fff;
+}
+
+.player-info.active {
+  border-color: red;
+}

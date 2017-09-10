@@ -5,4 +5,5 @@
     (boardMouseUp)="boardMouseUp($event)"
     (boardMouseMove)="boardMouseMove($event)"
   ></app-canvas>
+  <app-score-keeper #scoreKeeper [board]="board" [players]="players"></app-score-keeper>
 </div>
