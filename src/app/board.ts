@@ -2,6 +2,7 @@ import { Square } from './square'
 import { BoardService } from './board.service'
 import { Vector } from './vector'
 import { Player } from './player'
+import { Move } from './move'
 
 export class Board {
 
@@ -27,7 +28,7 @@ export class Board {
   }
 
   getMovesInDir(square: Square, player: Player, dir: Vector) {
-    let moves: Square[] = []
+    let moves: Move[] = []
     let allowed = true
     let origDir = new Vector(dir.x, dir.y)
     let index = 1
@@ -71,7 +72,8 @@ export class Board {
         }
 
         // This square is a possible move
-        moves.push(nextSquare)
+        console.log("reporting lethal move available")
+        moves.push(new Move(nextSquare, true))
 
       } else {
 
@@ -88,7 +90,7 @@ export class Board {
         }
 
         // This square is a possible move
-        moves.push(dirSquare)
+        moves.push(new Move(dirSquare))
       }
 
       // If the chessPiece is not a king then we don't allow it more than this one move
@@ -100,16 +102,18 @@ export class Board {
     return moves
   }
 
+  moveChessPiece(oldSquare: Square, newSquare: Square) {
+    newSquare.chessPiece = oldSquare.chessPiece
+    oldSquare.chessPiece = null
+  }
+
   getMoves(square: Square, activePlayer: Player) {
     let player = square.chessPiece.player
     let chessPiece = square.chessPiece
-    let moves = []
+    let moves: Move[] = []
 
     let dirs = [
-      new Vector(1,-1),
-      new Vector(1,1),
-      new Vector(-1,1),
-      new Vector(-1,-1)
+      new Vector(1,-1), new Vector(1,1), new Vector(-1,1), new Vector(-1,-1)
     ]
 
     for (let dir of dirs) {
@@ -117,17 +121,6 @@ export class Board {
     }
 
     return moves
-  }
-
-  squaresWithChessPiecesInPath(square1: Square, square2: Square) {
-    let squaresWithChessPieces = []
-    let squares = this.squaresInPath(square1, square2)
-    for (let square of squares) {
-      if (square.chessPiece) {
-        squaresWithChessPieces.push(square)
-      }
-    }
-    return squaresWithChessPieces
   }
 
   squaresInPath(square1: Square, square2: Square) {

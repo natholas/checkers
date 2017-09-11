@@ -5,6 +5,7 @@ import { Player } from './../player'
 import { ChessPiece } from './../chess-piece'
 import { Vector } from './../vector'
 import { Square } from './../square'
+import { Move } from './../move'
 
 @Component({
   selector: 'app-root',
@@ -39,9 +40,9 @@ export class MainComponent {
   }
 
   boardMouseUp(pos: Vector) {
-    let newSquare = this.board.getSquare(pos)
-    if (this.selectedSquare && newSquare !== this.selectedSquare) {
-      this.moveChessPiece(this.selectedSquare, newSquare)
+    let moveToSquare = this.board.getSquare(pos)
+    if (this.selectedSquare && this.selectedSquare !== moveToSquare) {
+      this.moveChessPiece(this.selectedSquare, moveToSquare)
     }
     this.unSelectSquare()
     this.update()
@@ -59,23 +60,23 @@ export class MainComponent {
     offsetPos.y -= rawPos.y
 
     this.selectedSquare.chessPiece.offset = offsetPos
-    this.update()
+    this.canvas.render()
   }
 
   selectSquare(square: Square) {
     this.unSelectSquare()
     this.selectedSquare = square
     square.selected = true
-    for (let square of this.selectedSquare.moves) {
-      square.highlighted = true
+    for (let move of this.selectedSquare.moves) {
+      move.square.highlighted = true
     }
     this.update()
   }
 
   unSelectSquare() {
     if (this.selectedSquare) {
-      for (let square of this.selectedSquare.moves) {
-        square.highlighted = false
+      for (let move of this.selectedSquare.moves) {
+        move.square.highlighted = false
       }
       this.selectedSquare.selected = false
     }
@@ -88,17 +89,19 @@ export class MainComponent {
   }
 
   moveChessPiece(oldSquare: Square, newSquare: Square) {
-    if (oldSquare.moves.indexOf(newSquare) < 0) return
-    newSquare.chessPiece = oldSquare.chessPiece
-    oldSquare.chessPiece = null
-    let didJump = this.board.squaresWithChessPiecesInPath(oldSquare, newSquare).length
+    if (!this.squareInMoves(newSquare, oldSquare.moves)) return
+    this.board.moveChessPiece(oldSquare, newSquare)
     this.selectSquare(newSquare)
-    if (!didJump) this.switchActivePlayer()
-    else this.removeJumpedPieces(oldSquare, newSquare)
-    if (this.board.isKingableSquare(newSquare)) {
-      newSquare.chessPiece.king = true
+    this.removeJumpedPieces(oldSquare, newSquare)
+    this.kingify(newSquare)
+    this.switchActivePlayer()
+  }
+
+  squareInMoves(square: Square, moves: Move[]) {
+    for (let move of moves) {
+      if (move.square === square) return true
     }
-    this.update()
+    return false
   }
 
   switchActivePlayer() {
@@ -109,6 +112,7 @@ export class MainComponent {
       this.activePlayer = this.players[0]
     }
     this.activePlayer.active = true
+    this.removeMoves()
     this.calcMoves()
   }
 
@@ -118,12 +122,46 @@ export class MainComponent {
         square.moves = this.board.getMoves(square, this.activePlayer)
       }
     }
+
+    gridLoop:
+    for (let square of this.board.grid) {
+      for (let move of square.moves) {
+        if (move.lethal) {
+          this.removeNonLethalMoves()
+          break gridLoop
+        }
+      }
+    }
+  }
+
+  removeNonLethalMoves() {
+    for (let square of this.board.grid) {
+      for (let i = 0; i < square.moves.length; i ++) {
+        if (!square.moves[i].lethal) {
+          console.log("removing non lethal move")
+          square.moves.splice(i, 1)
+          i --
+        }
+      }
+    }
+  }
+
+  removeMoves() {
+    for (let square of this.board.grid) {
+      square.moves = []
+    }
   }
 
   removeJumpedPieces(oldSquare: Square, newSquare: Square) {
     let squares: Square[] = this.board.squaresInPath(oldSquare, newSquare)
     for (let square of squares) {
       square.chessPiece = null
+    }
+  }
+
+  kingify(newSquare: Square) {
+    if (this.board.isKingableSquare(newSquare)) {
+      newSquare.chessPiece.king = true
     }
   }
 }

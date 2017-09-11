@@ -1,5 +1,6 @@
 import { Vector } from './vector'
 import { ChessPiece } from './chess-piece'
+import { Move } from './move'
 
 export class Square {
 
@@ -9,7 +10,7 @@ export class Square {
   chessPiece: ChessPiece
   traversable: boolean
   isSelected: boolean = false
-  moves: Square[] = []
+  moves: Move[] = []
   highlighted: boolean
 
   constructor(index: number, pos: Vector, color: string, traversable: boolean) {
@@ -21,7 +22,7 @@ export class Square {
   }
 
   get color() {
-    if (this.highlighted) return 'red'
+    if (this.highlighted) return 'aquamarine'
     return this.origColor
   }
 
@@ -32,6 +33,11 @@ export class Square {
       this.chessPiece.offset.x = 0
       this.chessPiece.offset.y = 0
     }
+  }
+
+  get chessPieceColor() {
+    if (this.moves.length > 0) return this.chessPiece.player.colorAvailable
+    return this.chessPiece.player.color
   }
 
 }

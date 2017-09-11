@@ -4,7 +4,7 @@ import { Board } from './board'
 @Injectable()
 export class RendererService {
   render(ctx, board: Board) {
-    
+
     if (!ctx) return
 
     let width = ctx.canvas.width
@@ -32,7 +32,7 @@ export class RendererService {
         x += multiplier / 2
         y += multiplier / 2
         ctx.arc(x - square.chessPiece.offset.x, y - square.chessPiece.offset.y, 28, 0, 2 * Math.PI)
-        ctx.fillStyle = square.chessPiece.color
+        ctx.fillStyle = square.chessPieceColor
         ctx.fill()
 
         if (square.chessPiece.selected) {
