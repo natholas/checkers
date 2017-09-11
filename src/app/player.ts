@@ -6,6 +6,6 @@ export class Player {
 
   constructor(type: number) {
     this.type = type
-    this.color = type == 1 ? '#333' : '#bbb'
+    this.color = type == 1 ? '#555' : '#ccc'
   }
 }

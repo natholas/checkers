@@ -18,53 +18,116 @@ export class Board {
     return this.grid[index]
   }
 
-  getMoves(square: Square, activePlayer: Player) {
-    let moves = []
-    let player = square.chessPiece.player
+  onBoard(pos: Vector) {
+    if (pos.x < 0) return false
+    if (pos.y < 0) return false
+    if (pos.x >= this.size) return false
+    if (pos.y >= this.size) return false
+    return true
+  }
 
-    let left = square.pos.x !== 0
-    let top = square.pos.y !== 0
-    let right = square.pos.x !== this.size - 1
-    let bottom = square.pos.y !== this.size - 1
+  getMovesInDir(square: Square, player: Player, dir: Vector) {
+    let moves: Square[] = []
+    let allowed = true
+    let origDir = new Vector(dir.x, dir.y)
+    let index = 1
 
-    if (right && top) moves.push(new Vector(1,-1))
-    if (right && bottom) moves.push(new Vector(1,1))
-    if (left && bottom) moves.push(new Vector(-1,1))
-    if (left && top) moves.push(new Vector(-1,-1))
-    
-    for (let i = 0; i < moves.length; i ++) {
-      let targetSquare = this.getSquare(square.pos.add(moves[i]))
-      
-      if (!targetSquare) {
-        moves.splice(i, 1)
-        i--
+    while (allowed && index < 20) {
+      dir = origDir.times(index)
+      index ++
+
+      // If the direction is off the board then this move is not possible
+      if (!this.onBoard(square.pos.add(dir))) {
+        allowed = false
         continue
       }
-      if (targetSquare.chessPiece && targetSquare.chessPiece.player !== activePlayer) {
-        let jumpTargetSquare = this.getSquare(targetSquare.pos.add(moves[i]))
-        if (jumpTargetSquare && !jumpTargetSquare.chessPiece) {
-          moves.splice(i, 1)
-          moves.splice(i, 0, jumpTargetSquare)
-        } else {
-          moves.splice(i, 1)
-          i --
+
+      // getting the square in the direction
+      let dirSquare = this.getSquare(square.pos.add(dir))
+
+      // Checking if square is occupied
+      if (dirSquare.chessPiece) {
+
+        // If the chessPiece is the players then this move is not possible
+        if (dirSquare.chessPiece.player == player) {
+          allowed = false
+          continue
         }
-      } else if (targetSquare.chessPiece && targetSquare.chessPiece.player === activePlayer) {
-        moves.splice(i, 1)
-        i--
-      } else if (!square.chessPiece.king && (targetSquare.pos.y > square.pos.y && player.type == 0 || targetSquare.pos.y < square.pos.y && player.type == 1)) {
-        moves.splice(i, 1)
-        i--
+
+        // If the next square is off the board then this move is not possible
+        if (!this.onBoard(dirSquare.pos.add(dir))) {
+          allowed = false
+          continue
+        }
+
+        // Finding the square after the one we are currently checking
+        let nextSquare = this.getSquare(dirSquare.pos.add(origDir))
+
+        // If the next square after this one is occupied then this move
+        // is not possible
+        if (nextSquare.chessPiece) {
+          allowed = false
+          continue
+        }
+
+        // This square is a possible move
+        moves.push(nextSquare)
+
       } else {
-        moves[i] = targetSquare
+
+        // If the chessPiece is not king then it is not allowed to move backwards
+        // Checking movement direction based on player type
+        if (!square.chessPiece.king) {
+          if (player.type == 0 && dirSquare.pos.y > square.pos.y) {
+            allowed = false
+            continue
+          } else if (player.type == 1 && dirSquare.pos.y < square.pos.y) {
+            allowed = false
+            continue
+          }
+        }
+
+        // This square is a possible move
+        moves.push(dirSquare)
+      }
+
+      // If the chessPiece is not a king then we don't allow it more than this one move
+      if (!square.chessPiece.king) {
+        allowed = false
       }
     }
 
     return moves
   }
 
-  isJump(p1: Vector, p2: Vector) {
-    return Math.abs(p1.x - p2.x) > 1
+  getMoves(square: Square, activePlayer: Player) {
+    let player = square.chessPiece.player
+    let chessPiece = square.chessPiece
+    let moves = []
+
+    let dirs = [
+      new Vector(1,-1),
+      new Vector(1,1),
+      new Vector(-1,1),
+      new Vector(-1,-1)
+    ]
+
+    for (let dir of dirs) {
+      moves = moves.concat(this.getMovesInDir(square, activePlayer, dir))
+    }
+
+    return moves
+  }
+
+  squaresWithChessPiecesInPath(square1: Square, square2: Square) {
+    let squaresWithChessPieces = []
+    let squares = this.squaresInPath(square1, square2)
+    for (let square of squares) {
+      if (square.chessPiece) {
+        squaresWithChessPieces.push(square)
+      }
+    }
+    return squaresWithChessPieces
   }
 
   squaresInPath(square1: Square, square2: Square) {

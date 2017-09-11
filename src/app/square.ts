@@ -5,17 +5,24 @@ export class Square {
 
   index: number
   pos: Vector
-  color: string
+  origColor: string
   chessPiece: ChessPiece
   traversable: boolean
   isSelected: boolean = false
+  moves: Square[] = []
+  highlighted: boolean
 
-  constructor(index: number, pos: Vector, color: string, traversable: boolean) {  
+  constructor(index: number, pos: Vector, color: string, traversable: boolean) {
     this.index = index
     this.pos = pos
-    
-    this.color = color
+
+    this.origColor = color
     this.traversable = traversable
+  }
+
+  get color() {
+    if (this.highlighted) return 'red'
+    return this.origColor
   }
 
   set selected(val: boolean) {

@@ -15,4 +15,11 @@ export class Vector {
     )
   }
 
+  times(val: number) {
+    return new Vector(
+      this.x * val,
+      this.y * val
+    )
+  }
+
 }

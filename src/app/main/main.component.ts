@@ -26,7 +26,7 @@ export class MainComponent {
 
   ngOnInit() {
     this.players = [new Player(0), new Player(1)]
-    this.board = new Board(this.boardService.generate(4))
+    this.board = new Board(this.boardService.generate())
     this.boardService.setupGame(this.board, this.players)
     this.switchActivePlayer()
   }
@@ -57,7 +57,7 @@ export class MainComponent {
 
     offsetPos.x -= rawPos.x
     offsetPos.y -= rawPos.y
-    
+
     this.selectedSquare.chessPiece.offset = offsetPos
     this.update()
   }
@@ -66,11 +66,17 @@ export class MainComponent {
     this.unSelectSquare()
     this.selectedSquare = square
     square.selected = true
+    for (let square of this.selectedSquare.moves) {
+      square.highlighted = true
+    }
     this.update()
   }
 
   unSelectSquare() {
     if (this.selectedSquare) {
+      for (let square of this.selectedSquare.moves) {
+        square.highlighted = false
+      }
       this.selectedSquare.selected = false
     }
     this.selectedSquare = null
@@ -81,18 +87,11 @@ export class MainComponent {
     this.scoreKeeper.update()
   }
 
-  checkIfMoveIsLegal(oldSquare: Square, newSquare: Square) {
-    if (!newSquare.traversable) return
-    let moves = this.board.getMoves(oldSquare, this.activePlayer)
-    if (moves.indexOf(newSquare) < 0) return
-    return true
-  }
-
   moveChessPiece(oldSquare: Square, newSquare: Square) {
-    if (!this.checkIfMoveIsLegal(oldSquare, newSquare)) return
+    if (oldSquare.moves.indexOf(newSquare) < 0) return
     newSquare.chessPiece = oldSquare.chessPiece
     oldSquare.chessPiece = null
-    let didJump = this.board.isJump(oldSquare.pos, newSquare.pos)
+    let didJump = this.board.squaresWithChessPiecesInPath(oldSquare, newSquare).length
     this.selectSquare(newSquare)
     if (!didJump) this.switchActivePlayer()
     else this.removeJumpedPieces(oldSquare, newSquare)
@@ -110,6 +109,15 @@ export class MainComponent {
       this.activePlayer = this.players[0]
     }
     this.activePlayer.active = true
+    this.calcMoves()
+  }
+
+  calcMoves() {
+    for (let square of this.board.grid) {
+      if (square.chessPiece && square.chessPiece.player === this.activePlayer) {
+        square.moves = this.board.getMoves(square, this.activePlayer)
+      }
+    }
   }
 
   removeJumpedPieces(oldSquare: Square, newSquare: Square) {
