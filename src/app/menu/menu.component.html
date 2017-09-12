@@ -1,10 +1,11 @@
 <div>
-  
   <div *ngFor="let player of players" class="player-info player-{{player.type}}">
     <span>Games won:<h1>{{player.gamesWon}}</h1></span>
   </div>
   <div class="buttons-container">
-    <button (click)="startGame.emit()">Start Game</button>
+    <div class="logo"></div>
+    <button (click)="startGame.emit()">New Game</button>
+    <button>Settings</button>
   </div>
 
 </div>

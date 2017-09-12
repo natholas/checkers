@@ -4,24 +4,24 @@
   text-align: center;
   font-size: 24px;
   height: 100vh;
-}
 
-.player-info.player-1 {
-  background-color: #111111;
-  color: #ffffff;
-}
+  &.player-1 {
+    background-color: #111111;
+    color: #ffffff;
+  }
 
-.player-info.player-0 {
-  background-color: #ffffff;
-}
+  &.player-0 {
+    background-color: #ffffff;
+  }
 
-.player-info span {
-  margin-top: 100px;
-  display: block;
-}
+  span {
+    margin-top: 100px;
+    display: block;
+  }
 
-.player-info h1 {
-  margin-top: 5px;
+  h1 {
+    margin-top: 5px;
+  }
 }
 
 .buttons-container {
@@ -29,6 +29,27 @@
   left: 0;
   right: 0;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateY(50px);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    clear: both;
+    display: inline-block;
+    float: none;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    background-image: url('/assets/checkers-logo.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    height: 20vh;
+    width: 100%;
+    max-height: 200px;
+    margin-bottom: 50px;
+  }
 }
