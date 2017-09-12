@@ -5,7 +5,7 @@ import { Player } from './../player';
 @Component({
   selector: 'app-score-keeper',
   templateUrl: './score-keeper.component.html',
-  styleUrls: ['./score-keeper.component.css']
+  styleUrls: ['./score-keeper.component.scss']
 })
 export class ScoreKeeperComponent {
 

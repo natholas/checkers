@@ -32,8 +32,9 @@ export class Board {
     let allowed = true
     let origDir = new Vector(dir.x, dir.y)
     let index = 1
+    let lethal = false
 
-    while (allowed && index < 20) {
+    while (allowed && index < 100) {
       dir = origDir.times(index)
       index ++
 
@@ -49,6 +50,13 @@ export class Board {
       // Checking if square is occupied
       if (dirSquare.chessPiece) {
 
+        // If we are already jumping over an enemy then we cant jump
+        // over another one
+        if (lethal) {
+          allowed = false
+          continue
+        }
+
         // If the chessPiece is the players then this move is not possible
         if (dirSquare.chessPiece.player == player) {
           allowed = false
@@ -56,7 +64,7 @@ export class Board {
         }
 
         // If the next square is off the board then this move is not possible
-        if (!this.onBoard(dirSquare.pos.add(dir))) {
+        if (!this.onBoard(dirSquare.pos.add(origDir))) {
           allowed = false
           continue
         }
@@ -72,7 +80,10 @@ export class Board {
         }
 
         // This square is a possible move
-        moves.push(new Move(nextSquare, true))
+        // Marking the jumped over square as toBeKilled
+        dirSquare.toBeKilled = true
+        lethal = true
+        moves.push(new Move(nextSquare, lethal))
 
       } else {
 
@@ -89,7 +100,7 @@ export class Board {
         }
 
         // This square is a possible move
-        moves.push(new Move(dirSquare))
+        moves.push(new Move(dirSquare, lethal))
       }
 
       // If the chessPiece is not a king then we don't allow it more than this one move

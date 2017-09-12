@@ -2,19 +2,20 @@
   <app-menu
     *ngIf="!showCanvas"
     (startGame)="startGame()"
-    [players]="players"
-  ></app-menu>
-  <app-canvas #canvas
-    [board]="board" 
-    *ngIf="showCanvas"
-    (boardMouseDown)="boardMouseDown($event)" 
-    (boardMouseUp)="boardMouseUp($event)"
-    (boardMouseMove)="boardMouseMove($event)"
-  ></app-canvas>
+    [players]="players">
+  </app-menu>
   <app-score-keeper
     #scoreKeeper
     *ngIf="showCanvas"
     [board]="board" 
     [players]="players"
-    (gameOver)="gameOver($event)"></app-score-keeper>
+    (gameOver)="gameOver($event)">
+  </app-score-keeper>
+  <app-canvas #canvas
+    [board]="board" 
+    *ngIf="showCanvas"
+    (boardMouseDown)="boardMouseDown($event)" 
+    (boardMouseUp)="boardMouseUp($event)"
+    (boardMouseMove)="boardMouseMove($event)">
+  </app-canvas>
 </div>

@@ -5,7 +5,7 @@ import { Vector } from './../vector'
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.css']
+  styleUrls: ['./canvas.component.scss']
 })
 export class CanvasComponent {
 
@@ -19,6 +19,23 @@ export class CanvasComponent {
 
   constructor(private rendererService: RendererService) { }
 
+  mousePos(e) {
+    let multiplier = this.canvas.width / this.canvas.clientWidth
+    
+    return new Vector(
+      (e.clientX - this.canvas.offsetLeft) * multiplier,
+      (e.clientY - this.canvas.offsetTop) * multiplier
+    )
+  }
+
+  mousePosInSquares(pos: Vector) {
+    let convertion = this.ctx.canvas.width / this.board.size
+    return new Vector(
+      Math.floor(pos.x / convertion),
+      Math.floor(pos.y / convertion)
+    )
+  }
+
   ngOnInit() {
     this.canvas = <HTMLCanvasElement> document.getElementById('canvas')
     
@@ -26,31 +43,14 @@ export class CanvasComponent {
     this.rendererService.render(this.ctx, this.board)
     var t = this
     this.canvas.addEventListener('mousedown', function (e) {
-      let convertion = t.ctx.canvas.width / t.board.size
-
-      t.boardMouseDown.emit(new Vector(
-        Math.floor(e.clientX / convertion),
-        Math.floor(e.clientY / convertion)
-      ))
+      t.boardMouseDown.emit(t.mousePosInSquares(t.mousePos(e)))
     })
     this.canvas.addEventListener('mouseup', function (e) {
-      let convertion = t.ctx.canvas.width / t.board.size
-
-      t.boardMouseUp.emit(new Vector(
-        Math.floor(e.clientX / convertion),
-        Math.floor(e.clientY / convertion)
-      ))
+      t.boardMouseUp.emit(t.mousePosInSquares(t.mousePos(e)))
     })
 
     this.canvas.addEventListener('mousemove', function (e) {
-      let convertion = t.ctx.canvas.width / t.board.size
-
-      t.boardMouseMove.emit(
-        new Vector(
-          e.clientX,
-          e.clientY
-        )
-      )
+      t.boardMouseMove.emit(t.mousePos(e))
     })
   }
 

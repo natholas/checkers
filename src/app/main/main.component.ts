@@ -10,7 +10,7 @@ import { Move } from './../move'
 @Component({
   selector: 'app-root',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.scss']
 })
 
 export class MainComponent {
@@ -48,6 +48,7 @@ export class MainComponent {
     let square = this.board.getSquare(pos)
     if (square.chessPiece && square.chessPiece.player === this.activePlayer) {
       this.selectSquare(this.board.getSquare(pos))
+      this.update()
     }
   }
 
@@ -60,7 +61,7 @@ export class MainComponent {
     this.update()
   }
 
-  boardMouseMove(rawPos: Vector) {
+  boardMouseMove(pos: Vector) {
     if (!this.selectedSquare) return
     let squareSize = this.canvas.canvas.width / this.board.size
     let offsetPos = new Vector(
@@ -68,8 +69,8 @@ export class MainComponent {
       this.selectedSquare.pos.y * squareSize + squareSize / 2
     )
 
-    offsetPos.x -= rawPos.x
-    offsetPos.y -= rawPos.y
+    offsetPos.x -= pos.x
+    offsetPos.y -= pos.y
 
     this.selectedSquare.chessPiece.offset = offsetPos
     this.canvas.render()
@@ -82,7 +83,6 @@ export class MainComponent {
     for (let move of this.selectedSquare.moves) {
       move.square.highlighted = true
     }
-    this.update()
   }
 
   unSelectSquare() {
@@ -100,6 +100,12 @@ export class MainComponent {
     this.scoreKeeper.update()
   }
 
+  removeToBeKilled() {
+    for (let square of this.board.grid) {
+      square.toBeKilled = false
+    }
+  }
+
   moveChessPiece(oldSquare: Square, newSquare: Square) {
     if (!this.squareInMoves(newSquare, oldSquare.moves)) return
     this.board.moveChessPiece(oldSquare, newSquare)
@@ -108,11 +114,15 @@ export class MainComponent {
     this.kingify(newSquare)
     if (lethal) {
       this.removeJumpedPieces(oldSquare, newSquare)
-      if (!this.calcMoves()) {
+      this.calcMoves()
+      if (newSquare.hasLethalMove) {
+        this.removeMoves([newSquare])
+      } else {
         this.switchActivePlayer()
       }
+    } else {
+      this.switchActivePlayer()
     }
-    else this.switchActivePlayer()
   }
 
   squareInMoves(square: Square, moves: Move[]) {
@@ -137,6 +147,7 @@ export class MainComponent {
 
   calcMoves() {
     this.removeMoves()
+    this.removeToBeKilled()
     for (let square of this.board.grid) {
       if (square.chessPiece && square.chessPiece.player === this.activePlayer) {
         square.moves = this.board.getMoves(square, this.activePlayer)
@@ -147,7 +158,7 @@ export class MainComponent {
       for (let move of square.moves) {
         if (move.lethal) {
           this.removeNonLethalMoves()
-          return true
+          return
         }
       }
     }
@@ -164,9 +175,11 @@ export class MainComponent {
     }
   }
 
-  removeMoves() {
+  removeMoves(exceptions: Square[] = []) {
     for (let square of this.board.grid) {
-      square.moves = []
+      if (exceptions.indexOf(square) < 0) {
+        square.moves = []
+      }
     }
   }
 
@@ -184,6 +197,7 @@ export class MainComponent {
   }
 
   gameOver(winner: Player) {
+    this.activePlayer.active = false
     this.activePlayer = null
     this.removeMoves()
     this.showCanvas = false

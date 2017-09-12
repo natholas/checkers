@@ -1,13 +1,18 @@
+.score-keeper {
+  width: 200px;
+  display: flex;
+  margin: 0 auto;
+  padding: 10px;
+}
+
 .player-info {
-  width: 400px;
-  max-width: 50%;
-  float: left;
   border: 2px solid black;
   font-weight: bold;
-  font-size: 40px;
+  font-size: 20px;
   text-align: center;
-  padding: 20px 0;
+  padding: 8px 0;
   box-sizing: border-box;
+  flex-basis: 100%;
 }
 
 .player-info.player-0 {
@@ -20,5 +25,5 @@
 }
 
 .player-info.active {
-  border-color: red;
+  // border-color: red;
 }
