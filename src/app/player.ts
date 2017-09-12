@@ -3,6 +3,7 @@ export class Player {
   color: string
   colorAvailable: string
   score: number = 0
+  gamesWon: number = 0
   active: boolean = false
 
   constructor(type: number) {

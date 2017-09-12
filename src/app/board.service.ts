@@ -8,7 +8,7 @@ import { Player } from './player'
 @Injectable()
 export class BoardService {
 
-  generate(size: number = 10) {
+  generate(size: number = 8) {
     let squares: Square[] = []
 
     let traversable = false
@@ -38,9 +38,9 @@ export class BoardService {
 
     for (let square of board.grid) {
 
-      if (square.traversable && square.pos.y < 4) {
+      if (square.traversable && square.pos.y < (board.size/2 - 1)) {
         square.chessPiece = new ChessPiece(players[1])
-      } else if (square.traversable && square.pos.y > board.size - 5) {
+      } else if (square.traversable && square.pos.y >= (board.size/2 + 1)) {
         square.chessPiece = new ChessPiece(players[0])
       }
     }

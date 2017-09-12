@@ -7,14 +7,16 @@ import { CanvasComponent } from './canvas/canvas.component'
 import { BoardService} from './board.service'
 import { RendererService} from './renderer.service'
 import { Vector} from './vector';
-import { ScoreKeeperComponent } from './score-keeper/score-keeper.component'
+import { ScoreKeeperComponent } from './score-keeper/score-keeper.component';
+import { MenuComponent } from './menu/menu.component'
 
 @NgModule({
   declarations: [
     MainComponent,
     MainComponent,
     CanvasComponent,
-    ScoreKeeperComponent
+    ScoreKeeperComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule

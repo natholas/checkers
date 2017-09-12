@@ -10,11 +10,11 @@
   box-sizing: border-box;
 }
 
-.player-info.white {
-  background-color: #eee;
+.player-info.player-0 {
+  background-color: #fff;
 }
 
-.player-info.black {
+.player-info.player-1 {
   background-color: #333;
   color: #fff;
 }

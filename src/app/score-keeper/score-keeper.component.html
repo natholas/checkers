@@ -1,5 +1,5 @@
 <div>
-  <div *ngFor="let player of players" class="player-info" [ngClass]="{'active': player.active, black: player.type == 1, white: player.type == 2}">
+  <div *ngFor="let player of players" class="player-info player-{{player.type}}" [ngClass]="{'active': player.active}">
     {{player.score}}
   </div>
 </div>

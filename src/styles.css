@@ -4,3 +4,22 @@ body {
     background: #eee;
     font-family: sans-serif;
 }
+
+button {
+    background-color: #ccc;
+    border: none;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+    outline: none;
+}
+
+button:hover {
+    background: #ddd;
+}
+
+button:active {
+    background: #bbb;
+}

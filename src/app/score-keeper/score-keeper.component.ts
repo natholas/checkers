@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { Board } from './../board';
 import { Player } from './../player';
 
@@ -11,6 +11,7 @@ export class ScoreKeeperComponent {
 
   @Input() board: Board
   @Input() players: Player[]
+  @Output() gameOver: EventEmitter<any> = new EventEmitter();
 
   ngOnInit() {
     this.update()
@@ -27,6 +28,18 @@ export class ScoreKeeperComponent {
       }
     }
 
+    for (let player of this.players) {
+      if (player.score == 0) {
+        this.gameOver.emit(this.findWinner())
+      }
+    }
+
+  }
+
+  findWinner() {
+    for (let player of this.players) {
+      if (player.score > 0) return player
+    }
   }
 
 }

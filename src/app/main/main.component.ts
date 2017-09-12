@@ -22,14 +22,26 @@ export class MainComponent {
   players: Player[] = []
   selectedSquare: Square = null
   activePlayer: Player
+  showCanvas: boolean = false
 
   constructor(private boardService: BoardService) { }
 
   ngOnInit() {
     this.players = [new Player(0), new Player(1)]
+  }
+
+  startGame() {
+    this.resetPlayerScore()
     this.board = new Board(this.boardService.generate())
     this.boardService.setupGame(this.board, this.players)
     this.switchActivePlayer()
+    this.showCanvas = true
+  }
+
+  resetPlayerScore() {
+    for (let player of this.players) {
+      player.score = 0
+    }
   }
 
   boardMouseDown(pos: Vector) {
@@ -96,7 +108,9 @@ export class MainComponent {
     this.kingify(newSquare)
     if (lethal) {
       this.removeJumpedPieces(oldSquare, newSquare)
-      this.calcMoves()
+      if (!this.calcMoves()) {
+        this.switchActivePlayer()
+      }
     }
     else this.switchActivePlayer()
   }
@@ -109,7 +123,9 @@ export class MainComponent {
   }
 
   switchActivePlayer() {
-    if (this.activePlayer) this.activePlayer.active = false
+    if (this.activePlayer) {
+      this.activePlayer.active = false
+    }
     if (this.activePlayer === this.players[0]) {
       this.activePlayer = this.players[1]
     } else {
@@ -127,12 +143,11 @@ export class MainComponent {
       }
     }
 
-    gridLoop:
     for (let square of this.board.grid) {
       for (let move of square.moves) {
         if (move.lethal) {
           this.removeNonLethalMoves()
-          break gridLoop
+          return true
         }
       }
     }
@@ -166,5 +181,12 @@ export class MainComponent {
     if (this.board.isKingableSquare(newSquare)) {
       newSquare.chessPiece.king = true
     }
+  }
+
+  gameOver(winner: Player) {
+    this.activePlayer = null
+    this.removeMoves()
+    this.showCanvas = false
+    winner.gamesWon += 1
   }
 }
