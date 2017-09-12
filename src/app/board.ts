@@ -72,7 +72,6 @@ export class Board {
         }
 
         // This square is a possible move
-        console.log("reporting lethal move available")
         moves.push(new Move(nextSquare, true))
 
       } else {
@@ -140,6 +139,17 @@ export class Board {
     }
     squares.splice(squares.length-1, 1)
     return squares
+  }
+
+  chessPiecesInPath(square1: Square, square2: Square) {
+    let squares = this.squaresInPath(square1, square2)
+    let output = []
+    for (let square of squares) {
+      if (square.chessPiece) {
+        output.push(square)
+      }
+    }
+    return output
   }
 
   isKingableSquare(square: Square) {

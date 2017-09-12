@@ -92,9 +92,13 @@ export class MainComponent {
     if (!this.squareInMoves(newSquare, oldSquare.moves)) return
     this.board.moveChessPiece(oldSquare, newSquare)
     this.selectSquare(newSquare)
-    this.removeJumpedPieces(oldSquare, newSquare)
+    let lethal = !!this.board.chessPiecesInPath(oldSquare, newSquare).length
     this.kingify(newSquare)
-    this.switchActivePlayer()
+    if (lethal) {
+      this.removeJumpedPieces(oldSquare, newSquare)
+      this.calcMoves()
+    }
+    else this.switchActivePlayer()
   }
 
   squareInMoves(square: Square, moves: Move[]) {
@@ -112,11 +116,11 @@ export class MainComponent {
       this.activePlayer = this.players[0]
     }
     this.activePlayer.active = true
-    this.removeMoves()
     this.calcMoves()
   }
 
   calcMoves() {
+    this.removeMoves()
     for (let square of this.board.grid) {
       if (square.chessPiece && square.chessPiece.player === this.activePlayer) {
         square.moves = this.board.getMoves(square, this.activePlayer)
@@ -138,7 +142,6 @@ export class MainComponent {
     for (let square of this.board.grid) {
       for (let i = 0; i < square.moves.length; i ++) {
         if (!square.moves[i].lethal) {
-          console.log("removing non lethal move")
           square.moves.splice(i, 1)
           i --
         }
