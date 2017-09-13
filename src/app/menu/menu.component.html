@@ -18,6 +18,18 @@
       <label>Player {{player.type}} name</label>
     </div>
 
+    <div class="formfield">
+      <input type="checkbox" [(ngModel)]="config.player0isBot">
+      <label>{{players[0].name}} is bot</label>
+    </div>
+
+    <div class="formfield">
+      <input type="checkbox" [(ngModel)]="config.player1isBot">
+      <label>{{players[1].name}} is bot</label>
+    </div>
+
+
+
     <button (click)="start()">Start Game</button>
   </div>
 </div>

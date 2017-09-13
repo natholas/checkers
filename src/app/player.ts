@@ -1,4 +1,5 @@
 import { NamesService } from './names.service'
+import { Bot } from './bot'
 
 export class Player {
   type: number
@@ -7,6 +8,7 @@ export class Player {
   gamesWon: number = 0
   active: boolean = false
   name: string
+  bot: Bot
 
   constructor(type: number) {
     this.type = type

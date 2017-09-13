@@ -7,6 +7,7 @@ import { Vector } from './../vector'
 import { Square } from './../square'
 import { Move } from './../move'
 import { Config } from './../config'
+import { Bot } from './../bot'
 
 @Component({
   selector: 'app-root',
@@ -36,8 +37,18 @@ export class MainComponent {
     this.resetPlayerScore()
     this.board = new Board(this.boardService.generate())
     this.boardService.setupGame(this.board, this.players)
+
+    
+    if (this.config.player0isBot) {
+      this.players[0].bot = new Bot()
+    }
+    if (this.config.player1isBot) {
+      this.players[1].bot = new Bot()
+    }
+
     this.switchActivePlayer()
     this.showCanvas = true
+    this.processBotTurn()
   }
 
   resetPlayerScore() {
@@ -47,6 +58,7 @@ export class MainComponent {
   }
 
   boardMouseDown(pos: Vector) {
+    if (this.activePlayer.bot) return
     let square = this.board.getSquare(pos)
     if (square.chessPiece && square.chessPiece.player === this.activePlayer) {
       this.selectSquare(this.board.getSquare(pos))
@@ -55,6 +67,7 @@ export class MainComponent {
   }
 
   boardMouseUp(pos: Vector) {
+    if (this.activePlayer.bot) return
     let moveToSquare = this.board.getSquare(pos)
     if (this.selectedSquare && this.selectedSquare !== moveToSquare) {
       this.moveChessPiece(this.selectedSquare, moveToSquare)
@@ -64,6 +77,7 @@ export class MainComponent {
   }
 
   boardMouseMove(pos: Vector) {
+    if (this.activePlayer.bot) return
     if (!this.selectedSquare) return
     let squareSize = this.canvas.canvas.width / this.board.size
     let offsetPos = new Vector(
@@ -125,6 +139,7 @@ export class MainComponent {
     } else {
       this.switchActivePlayer()
     }
+    this.processBotTurn()
   }
 
   squareInMoves(square: Square, moves: Move[]) {
@@ -145,6 +160,27 @@ export class MainComponent {
     }
     this.activePlayer.active = true
     this.calcMoves()
+  }
+
+  processBotTurn() {
+    if (!this.activePlayer.bot) return
+    let squares = this.activePlayer.bot.takeTurn(this.board)
+    if (squares) {
+      let t = this
+      setTimeout(function() {
+        t.moveChessPiece(squares[0], squares[1])
+        t.unSelectSquare()
+        t.update()
+      }, 0)
+    } else {
+      this.gameOver(this.getNotActivePlayer())
+    }
+  }
+
+  getNotActivePlayer() {
+    for (let player of this.players) {
+      if (!player.active) return player
+    }
   }
 
   calcMoves() {
