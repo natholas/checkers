@@ -7,20 +7,27 @@ export class Bot {
   takeTurn(board: Board) {
     let fromSquare: Square
 
+    let best: Square[]
+    let bestPoints: number
+
     for (let square of board.grid) {
-      if (square.moves.length) {
-        fromSquare = square
-        break
+      for (let move of square.moves) {
+        let points = this.getMoveValue(board, square, move.square)
+        if (!best || points > bestPoints) {
+          best = [square, move.square]
+          bestPoints = points
+        }
       }
     }
 
-    if (!fromSquare) {
-      return false
-    }
+    return best
+  }
 
-    let index = Math.floor(Math.random() * fromSquare.moves.length)
-    let toSquare = fromSquare.moves[index].square
+  getMoveValue(board: Board, fromSquare: Square, toSquare: Square) {
+    let points = 0
 
-    return [fromSquare, toSquare]
+    
+
+    return points
   }
 }
