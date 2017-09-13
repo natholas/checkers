@@ -13,13 +13,9 @@
       <input type="number" [(ngModel)]="config.gameSize" required>
       <label>Game size</label>
     </div>
-    <div class="formfield">
-      <input type="text" [(ngModel)]="config.player0Name" required>
-      <label>Player 1 name</label>
-    </div>
-    <div class="formfield">
-      <input type="text" [(ngModel)]="config.player1Name" required>
-      <label>Player 2 name</label>
+    <div class="formfield" *ngFor="let player of players">
+      <input type="text" [(ngModel)]="player.name" required>
+      <label>Player {{player.type}} name</label>
     </div>
 
     <button (click)="start()">Start Game</button>

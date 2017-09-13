@@ -1,19 +1,21 @@
 .score-keeper {
-  width: 200px;
+  width: 300px;
   display: flex;
   margin: 0 auto;
   padding: 10px;
 }
 
 .player-info {
-  // border: 2px solid #111;
-  font-weight: bold;
   font-size: 20px;
   text-align: center;
   padding: 8px 0;
   box-sizing: border-box;
   flex-basis: 100%;
   position: relative;
+
+  .player-score {
+     font-weight: bold;
+  }
 
   &.active {
     &:after {

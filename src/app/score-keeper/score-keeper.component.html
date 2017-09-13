@@ -1,5 +1,6 @@
 <div class="score-keeper">
   <div *ngFor="let player of players" class="player-info player-{{player.type}}" [ngClass]="{'active': player.active}">
-    {{player.score}}
+    <span class="player-name">{{player.name}}:</span>
+    <span class="player-score">{{player.score}}</span>
   </div>
 </div>

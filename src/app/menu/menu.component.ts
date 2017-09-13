@@ -17,8 +17,6 @@ export class MenuComponent {
 
   ngOnInit() {
     this.config.gameSize = 8
-    this.config.player0Name = 'player 1'
-    this.config.player1Name = 'player 2'
   }
 
   settings() {

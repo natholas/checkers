@@ -1,3 +1,5 @@
+import { NamesService } from './names.service'
+
 export class Player {
   type: number
   color: string
@@ -8,7 +10,7 @@ export class Player {
 
   constructor(type: number) {
     this.type = type
-    this.name = 'player ' + type
+    this.name = new NamesService().random()
     this.color = type == 1 ? '#111111' : '#ffffff'
   }
 }
