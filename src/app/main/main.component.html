@@ -2,7 +2,8 @@
   <app-menu
     *ngIf="!showCanvas"
     (startGame)="startGame()"
-    [players]="players">
+    [players]="players"
+    [config]="config">
   </app-menu>
   <app-score-keeper
     #scoreKeeper

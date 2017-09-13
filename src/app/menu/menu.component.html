@@ -2,10 +2,26 @@
   <div *ngFor="let player of players" class="player-info player-{{player.type}}">
     <span>Games won:<h1>{{player.gamesWon}}</h1></span>
   </div>
-  <div class="buttons-container">
+  <div class="buttons-container" *ngIf="showMenu">
     <div class="logo"></div>
-    <button (click)="startGame.emit()">New Game</button>
-    <button>Settings</button>
+    <button (click)="settings()">New Game</button>
   </div>
+  <div class="settings-container" *ngIf="showSettings">
+    <div class="logo"></div>
 
+    <div class="formfield">
+      <input type="number" [(ngModel)]="config.gameSize" required>
+      <label>Game size</label>
+    </div>
+    <div class="formfield">
+      <input type="text" [(ngModel)]="config.player0Name" required>
+      <label>Player 1 name</label>
+    </div>
+    <div class="formfield">
+      <input type="text" [(ngModel)]="config.player1Name" required>
+      <label>Player 2 name</label>
+    </div>
+
+    <button (click)="start()">Start Game</button>
+  </div>
 </div>

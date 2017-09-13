@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 
 import { MainComponent } from './main/main.component'
 import { CanvasComponent } from './canvas/canvas.component'
@@ -19,7 +20,8 @@ import { MenuComponent } from './menu/menu.component'
     MenuComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [BoardService, RendererService],
   bootstrap: [MainComponent]
