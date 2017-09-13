@@ -6,6 +6,7 @@ import { ChessPiece } from './../chess-piece'
 import { Vector } from './../vector'
 import { Square } from './../square'
 import { Move } from './../move'
+import { Config } from './../config'
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ export class MainComponent {
   selectedSquare: Square = null
   activePlayer: Player
   showCanvas: boolean = false
+  config: Config = new Config()
 
   constructor(private boardService: BoardService) { }
 
