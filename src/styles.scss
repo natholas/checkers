@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import 'toggler';
+
 body {
     margin: 0;
     background: #777;
@@ -41,7 +44,8 @@ button:active {
     margin: 0 0 10px 0;
     width: calc(100% - 20px);
 
-    input {
+    input[type="text"],
+    input[type="number"], {
         padding: 20px 10px 10px 10px;
         border-radius: 4px;
         outline: none;

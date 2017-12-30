@@ -18,14 +18,20 @@
       <label>Player {{player.type}} name</label>
     </div>
 
-    <div class="formfield">
-      <input type="checkbox" [(ngModel)]="config.player0isBot">
-      <label>{{players[0].name}} is bot</label>
+    <div class="formfield is-bot-switch">
+      <div>{{players[0].name}} is bot</div>
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="config.player0isBot">
+        <span class="slider round"></span>
+      </label>
     </div>
 
-    <div class="formfield">
-      <input type="checkbox" [(ngModel)]="config.player1isBot">
-      <label>{{players[1].name}} is bot</label>
+    <div class="formfield is-bot-switch">
+      <div>{{players[1].name}} is bot</div>
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="config.player1isBot">
+        <span class="slider round"></span>
+      </label>
     </div>
 
 

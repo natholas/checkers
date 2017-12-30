@@ -38,6 +38,8 @@ export class MainComponent {
     this.board = new Board(this.boardService.generate())
     this.boardService.setupGame(this.board, this.players)
 
+    this.players[0].bot = null
+    this.players[1].bot = null
     
     if (this.config.player0isBot) {
       this.players[0].bot = new Bot()
@@ -164,7 +166,7 @@ export class MainComponent {
 
   processBotTurn() {
     if (!this.activePlayer.bot) return
-    let squares = this.activePlayer.bot.takeTurn(this.board)
+    let squares = this.activePlayer.bot.takeTurn(this.board, this.notActivePlayer)
     if (squares) {
       let t = this
       setTimeout(function() {
@@ -173,11 +175,11 @@ export class MainComponent {
         t.update()
       }, 0)
     } else {
-      this.gameOver(this.getNotActivePlayer())
+      this.gameOver(this.notActivePlayer)
     }
   }
 
-  getNotActivePlayer() {
+  get notActivePlayer() {
     for (let player of this.players) {
       if (!player.active) return player
     }
@@ -235,6 +237,7 @@ export class MainComponent {
   }
 
   gameOver(winner: Player) {
+    if (!this.showCanvas) return
     this.activePlayer.active = false
     this.activePlayer = null
     this.removeMoves()

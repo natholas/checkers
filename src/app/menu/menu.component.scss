@@ -58,4 +58,18 @@
     width: 400px;
     max-width: calc(100% - 20px);
   }
+
+  .is-bot-switch {
+    padding: 10px;
+    border-radius: 4px;
+    background: #fbf2de;
+    display: flex;
+    align-items: center;
+
+    > div {
+      width: calc(100% - 60px);
+      text-align: left;
+      font-size: 20px;
+    }
+  }
 }
